@@ -30,13 +30,13 @@ jobs:
         sudo mkdir -p /opt/miDirectorio
 
     - name: Clonar repositorio
-  uses: appleboy/ssh-action@master
-  with:
-    host: 18.208.226.205
-    username: ec2-user
-    key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
-    script: |
-      sudo git clone https://${{ secrets.GH_TOKEN }}@github.com/LarsChamma/alkemyTech-UMSA-DevOps-T2.git /opt/nombreDeSuDirectorio || exit 1
+      uses: appleboy/ssh-action@master
+      with:
+        host: 18.208.226.205
+        username: ec2-user
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
+        script: |
+          sudo git clone https://${{ secrets.GH_TOKEN }}@github.com/LarsChamma/alkemyTech-UMSA-DevOps-T2.git /opt/nombreDeSuDirectorio || exit 1
 
     - name: Instalar paquetes NPM
       uses: appleboy/ssh-action@master
@@ -67,3 +67,14 @@ jobs:
         script: |
           sudo pm2 status | grep tu_app.js || exit 1
 
+    - name: Notificar éxito
+      if: success()
+      run: echo "El despliegue se completó con éxito."
+
+    - name: Notificar fallo
+      if: failure()
+      run: echo "El despliegue falló."
+
+    - name: Limpieza
+      run: |
+        # Agregar cualquier limpieza o finalización necesaria aquí
