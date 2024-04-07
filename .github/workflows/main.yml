@@ -1,3 +1,34 @@
+name: CI Pipeline para DEV
+
+on:
+  push:
+    branches:
+      - main  # ajusta según la rama que desees monitorear
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v2
+
+    - name: Verificar herramientas instaladas
+      run: |
+        command -v node
+        command -v npm
+        command -v git
+
+    - name: Instalar Node.js, Npm y Git
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nodejs npm git
+
+    - name: Crear directorio de trabajo en EC2
+      run: |
+        sudo rm -rf /opt/miDirectorio
+        sudo mkdir -p /opt/miDirectorio
+
     - name: Clonar repositorio
       uses: appleboy/ssh-action@master
       with:
