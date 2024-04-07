@@ -30,13 +30,13 @@ jobs:
         sudo mkdir -p /opt/miDirectorio
 
     - name: Clonar repositorio
-      uses: appleboy/ssh-action@master
-      with:
-        host: 18.208.226.205
-        username: ec2-user
-        key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
-        script: |
-          sudo git clone https://${{ secrets.GH_TOKEN }}@github.com/usuario/repo.git /opt/miDirectorio || exit 1
+  uses: appleboy/ssh-action@master
+  with:
+    host: 18.208.226.205
+    username: ec2-user
+    key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
+    script: |
+      sudo git clone https://${{ secrets.GH_TOKEN }}@github.com/LarsChamma/alkemyTech-UMSA-DevOps-T2.git /opt/nombreDeSuDirectorio || exit 1
 
     - name: Instalar paquetes NPM
       uses: appleboy/ssh-action@master
