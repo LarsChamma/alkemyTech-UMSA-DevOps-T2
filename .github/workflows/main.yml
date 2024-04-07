@@ -1,40 +1,9 @@
-name: CI Pipeline para DEV
-
-on:
-  push:
-    branches:
-      - main  # ajusta según la rama que desees monitorear
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout código
-      uses: actions/checkout@v2
-
-    - name: Verificar herramientas instaladas
-      run: |
-        command -v node
-        command -v npm
-        command -v git
-
-    - name: Instalar Node.js, Npm y Git
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y nodejs npm git
-
-    - name: Crear directorio de trabajo en EC2
-      run: |
-        sudo rm -rf /opt/miDirectorio
-        sudo mkdir -p /opt/miDirectorio
-
     - name: Clonar repositorio
       uses: appleboy/ssh-action@master
       with:
         host: 18.208.226.205
         username: ec2-user
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
         script: |
           sudo git clone https://${{ secrets.GH_TOKEN }}@github.com/usuario/repo.git /opt/miDirectorio || exit 1
 
@@ -43,7 +12,7 @@ jobs:
       with:
         host: 18.208.226.205
         username: ec2-user
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
         script: |
           cd /opt/miDirectorio
           sudo npm install express pm2 || exit 1
@@ -53,7 +22,7 @@ jobs:
       with:
         host: 18.208.226.205
         username: ec2-user
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
         script: |
           cd /opt/miDirectorio
           sudo pm2 start tu_app.js || exit 1
@@ -63,18 +32,7 @@ jobs:
       with:
         host: 18.208.226.205
         username: ec2-user
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # Utiliza el secreto correcto aquí
         script: |
           sudo pm2 status | grep tu_app.js || exit 1
 
-    - name: Notificar éxito
-      if: success()
-      run: echo "El despliegue se completó con éxito."
-
-    - name: Notificar fallo
-      if: failure()
-      run: echo "El despliegue falló."
-
-    - name: Limpieza
-      run: |
-        # Agregar cualquier limpieza o finalización necesaria aquí
